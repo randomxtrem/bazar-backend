@@ -11,7 +11,7 @@ const register = async (req,res)=>{
     try {
         const {username, password, email, gender} = req.body;
         if(!username || !email || !password || !gender){
-            res.redirect('/register');
+            throw new httpError("Invalid Credentials");
         }
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -37,7 +37,7 @@ const login = async (req,res)=>{
     try {
         const {email, password} = req.body;
         if (!email || !password){
-            res.redirect('/login');
+            throw new httpError("Invalid credentials", 400);
         }
         if(!(await pool.query(userQueries.checkEmailExists, [email])).rows.length)
             throw new httpError("Invalid credentials!", 400);
